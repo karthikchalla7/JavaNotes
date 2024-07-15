@@ -61,7 +61,7 @@
 - Each thread has its own register.
 
 #### Counter
-- Also known as program counter, it points to the instruciton which is getting exectued.
+- Also known as program counter, it points to the instruction which is getting exectued.
 - Increments its counter after successfully exectuion of the instruction.
 - Like a book keeper which instruction need to run by specific thread.
 
@@ -110,6 +110,6 @@
 
 - process1 and process2 in the above picture thats called multitaksing
 - Inside particular process/task we can create multiple threads is called multithreading
-- In multitasking never any resources.Whereas multithreading shares the resoruces in the task.
+- In multitasking never share any resources.Whereas multithreading shares the resoruces in the task.
 
 
