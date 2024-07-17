@@ -34,13 +34,15 @@ This README provides an overview of ThreadPool and the Executor Framework in Jav
 - Available threads take tasks from the queue
 - If no threads are available, tasks are stored in the queue until a thread becomes free
 
-### Executor Framework (java.util.concurrent)
+### Executor Framework 
+- package used is java.util.concurrent
 ![image](https://github.com/user-attachments/assets/e7291262-1b83-471e-bb8a-42b75ad8972d)
 
 
-### ThreadPoolExecutor (Very Important)
+### ThreadPoolExecutor
 
 ### Purpose
+- Very important concept to understand.
 - Creates a customizable thread pool
 
 ### Workflow Example
@@ -161,7 +163,7 @@ class CustomRejectHandler implements RejectedExecutionHandler{
     }
 }
 ```
-### Important Interview Question
+### Interview Question
 Q: In a thread pool, why choose a specific corePoolSize (e.g., 2 instead of 10 or 15)?
 A: The choice of corePoolSize depends on various factors:
 - CPU Cores
