@@ -18,9 +18,22 @@
 - Already submitted tasks will continue to execute.
 
 ```java
-ExecutorService executor = Executors.newFixedThreadPool(5);
-// ... submit tasks ...
-executor.shutdown();
+ExecutorService poolobj = Executors.newFixedThreadPool(5);
+        poolobj.submit(()->{
+            try {
+                Thread.sleep(15000);
+                System.out.println("inside the thread doing something");
+            }catch (Exception e){
+
+            }
+            System.out.println("thread going to start its work");
+        });
+
+        //shutdown()
+        poolobj.shutdown();
+        poolobj.submit(()->{
+            System.out.println("Now i canot submit tasks");
+        });
 ```
 
 #### awaitTermination()
@@ -30,7 +43,30 @@ executor.shutdown();
 - Returns true if ExecutorService shuts down within the specified timeout, otherwise false.
 
 ```java
-boolean terminated = executor.awaitTermination(60, TimeUnit.SECONDS);
+//boolean terminated = executor.awaitTermination(60, TimeUnit.SECONDS);
+
+        ExecutorService poolobj = Executors.newFixedThreadPool(5);
+        poolobj.submit(()->{
+            try {
+                Thread.sleep(15000);
+                System.out.println("inside the thread doing something");
+            }catch (Exception e){
+
+            }
+            System.out.println("thread going to start its work");
+        });
+
+        //shutdown()
+        poolobj.shutdown();
+        poolobj.submit(()->{
+            System.out.println("Now i canot submit tasks");
+        });
+
+       // isTerminated method
+        try {
+            boolean isTerminated = poolobj.isTerminated();
+            System.out.println("Is terminated: "+isTerminated);
+        }catch (Exception e){}
 ```
 
 #### shutdownNow()
@@ -39,7 +75,19 @@ boolean terminated = executor.awaitTermination(60, TimeUnit.SECONDS);
 - Returns a list of tasks that were awaiting execution.
 
 ```java
-List<Runnable> pendingTasks = executor.shutdownNow();
+//List<Runnable> pendingTasks = executor.shutdownNow();
+ExecutorService poolobj = Executors.newFixedThreadPool(5);
+        poolobj.submit(()->{
+            try {
+                Thread.sleep(15000);
+                System.out.println("inside the thread doing something");
+            }catch (Exception e){
+
+            }
+            System.out.println("thread going to start its work");
+        });
+         poolobj.shutdownNow();
+        System.out.println("Main thread is execute finally");
 ```
 
 ## ScheduledThreadPoolExecutor
@@ -115,6 +163,9 @@ Integer value2 = threadLocal.get(); // Returns 2
 - Introduced to tackle the disadvantages of platform threads.
 - Managed by JVM, not directly mapped to OS threads.
 - Multiple virtual threads can be multiplexed onto fewer OS threads.
+- So we can map the thread to OS only if it wants to execute
+- Lets say after executing for some time it wants to wait for a task to finish.
+- Now since it is waiting it will be deattached and the resources will be given to some other thread in need.
 - Advantages:
   - Faster creation and lower resource usage.
   - Better handling of blocking operations (e.g., I/O waiting).
@@ -132,32 +183,32 @@ Virtual threads are particularly useful for I/O-bound applications where many th
 
 ## Important Interview Questions
 
-1. **Q: What is the difference between `shutdown()` and `shutdownNow()` methods in ExecutorService?**
-   A: `shutdown()` initiates an orderly shutdown where previously submitted tasks are executed, but no new tasks are accepted. `shutdownNow()` attempts to stop all actively executing tasks, halts the processing of waiting tasks, and returns a list of the tasks that were awaiting execution.
+1. **Q: What is the difference between `shutdown()` and `shutdownNow()` methods in ExecutorService?**  
+A: `shutdown()` initiates an orderly shutdown where previously submitted tasks are executed, but no new tasks are accepted. `shutdownNow()` attempts to stop all actively executing tasks, halts the processing of waiting tasks, and returns a list of the tasks that were awaiting execution.
 
-2. **Q: How does `awaitTermination()` work, and when would you use it?**
-   A: `awaitTermination()` blocks until all tasks have completed execution after a shutdown request, or the timeout occurs, or the current thread is interrupted, whichever happens first. It's used when you want to wait for the ExecutorService to complete all tasks after calling `shutdown()`.
+2. **Q: How does `awaitTermination()` work, and when would you use it?**  
+A: `awaitTermination()` blocks until all tasks have completed execution after a shutdown request, or the timeout occurs, or the current thread is interrupted, whichever happens first. It's used when you want to wait for the ExecutorService to complete all tasks after calling `shutdown()`.
 
-3. **Q: What is the difference between `scheduleAtFixedRate()` and `scheduleWithFixedDelay()`?**
-   A: `scheduleAtFixedRate()` attempts to execute the task at a fixed rate, regardless of how long each task takes. `scheduleWithFixedDelay()` waits for the specified delay between the end of one execution and the start of the next.
+3. **Q: What is the difference between `scheduleAtFixedRate()` and `scheduleWithFixedDelay()`?**  
+A: `scheduleAtFixedRate()` attempts to execute the task at a fixed rate, regardless of how long each task takes. `scheduleWithFixedDelay()` waits for the specified delay between the end of one execution and the start of the next.
 
-4. **Q: How does ThreadLocal work, and what are its use cases?**
-   A: ThreadLocal provides thread-local variables, where each thread has its own, independently initialized copy of the variable. It's useful for maintaining thread-safe data that differs per thread, such as transaction IDs or user authentication information in web applications.
+4. **Q: How does ThreadLocal work, and what are its use cases?**  
+A: ThreadLocal provides thread-local variables, where each thread has its own, independently initialized copy of the variable. It's useful for maintaining thread-safe data that differs per thread, such as transaction IDs or user authentication information in web applications.
 
-5. **Q: What are the main differences between virtual threads and platform threads in Java?**
-   A: Platform threads are mapped one-to-one with OS threads and are more resource-intensive. Virtual threads are lightweight, managed by the JVM, and can be multiplexed onto a smaller number of OS threads. Virtual threads are designed to improve throughput for I/O-bound applications.
+5. **Q: What are the main differences between virtual threads and platform threads in Java?**  
+A: Platform threads are mapped one-to-one with OS threads and are more resource-intensive. Virtual threads are lightweight, managed by the JVM, and can be multiplexed onto a smaller number of OS threads. Virtual threads are designed to improve throughput for I/O-bound applications.
 
-6. **Q: How do you create a virtual thread in Java?**
-   A: Virtual threads can be created using `Thread.ofVirtual().start(Runnable)` or `Thread.startVirtualThread(Runnable)`.
+6. **Q: How do you create a virtual thread in Java?**   
+A: Virtual threads can be created using `Thread.ofVirtual().start(Runnable)` or `Thread.startVirtualThread(Runnable)`.
 
-7. **Q: What is the main advantage of using ScheduledThreadPoolExecutor over Timer?**
-   A: ScheduledThreadPoolExecutor is more flexible, allows multiple threads, and provides better error handling. It also supports both fixed-rate and fixed-delay task scheduling.
+7. **Q: What is the main advantage of using ScheduledThreadPoolExecutor over Timer?**  
+A: ScheduledThreadPoolExecutor is more flexible, allows multiple threads, and provides better error handling. It also supports both fixed-rate and fixed-delay task scheduling.
 
-8. **Q: How does the ExecutorService help in managing thread pools?**
-   A: ExecutorService provides a higher-level replacement for managing thread creation. It separates task submission from task execution, allowing for better resource management and performance in concurrent applications.
+8. **Q: How does the ExecutorService help in managing thread pools?**  
+A: ExecutorService provides a higher-level replacement for managing thread creation. It separates task submission from task execution, allowing for better resource management and performance in concurrent applications.
 
-9. **Q: What happens if an exception occurs in a scheduled task in ScheduledThreadPoolExecutor?**
-   A: If an exception occurs, the task is terminated, but the executor continues to run. Future executions of the task are suppressed. To handle exceptions, you should wrap the task's code in a try-catch block.
+9. **Q: What happens if an exception occurs in a scheduled task in ScheduledThreadPoolExecutor?**  
+A: If an exception occurs, the task is terminated, but the executor continues to run. Future executions of the task are suppressed. To handle exceptions, you should wrap the task's code in a try-catch block.
 
-10. **Q: How do virtual threads improve application performance?**
-    A: Virtual threads improve performance by allowing a large number of concurrent operations without the overhead of creating numerous OS threads. This is particularly beneficial for I/O-bound applications where threads spend a lot of time waiting.
+10. **Q: How do virtual threads improve application performance?**  
+A: Virtual threads improve performance by allowing a large number of concurrent operations without the overhead of creating numerous OS threads. This is particularly beneficial for I/O-bound applications where threads spend a lot of time waiting.
